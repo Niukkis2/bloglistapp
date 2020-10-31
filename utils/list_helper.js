@@ -1,3 +1,7 @@
+const defaultReturn = {
+    default: "default"
+}
+
 const totalLikes = (blogs) => {
     const reducer = (sum, blog) => {
         return sum + blog.likes
@@ -7,7 +11,7 @@ const totalLikes = (blogs) => {
 
 const favoriteBlog = (blogs) => {
     if (blogs.length === 0) {
-        return null
+        return defaultReturn
     } else {
         let favorite = blogs[0]
         for (let i = 0; i<blogs.length; i++) {
@@ -25,7 +29,7 @@ const favoriteBlog = (blogs) => {
 
 const mostBlogs = (blogs) => {
     if (blogs.length === 0) {
-        return null
+        return defaultReturn
     } else {
         let authorsAndBlogCount = new Map()
         for (let i = 0; i<blogs.length; i++) {
@@ -35,23 +39,52 @@ const mostBlogs = (blogs) => {
                 authorsAndBlogCount.set(blogs[i].author, 1)
             }
         }
-        let topAuthor = blogs[0].author
-        let topAuthorEntryCount = 0
+        let authorWithMostLikes = blogs[0].author
+        let entryCount = 0
         for (let [key, value] of authorsAndBlogCount.entries()) {
-            if (value > topAuthorEntryCount) {
-                topAuthorEntryCount = value
-                topAuthor = key
+            if (value > entryCount) {
+                entryCount = value
+                authorWithMostLikes = key
             }
         }
         return {
-            author: topAuthor,
-            blogs: topAuthorEntryCount
+            author: authorWithMostLikes,
+            blogs: entryCount
+        }
+    }
+}
+
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return defaultReturn
+    } else {
+        let authorsAndTotalLikes = new Map()
+        for (let i = 0; i<blogs.length; i++) {
+            if (authorsAndTotalLikes.has(blogs[i].author)) {
+                authorsAndTotalLikes.set(blogs[i].author, authorsAndTotalLikes.get(blogs[i].author) + blogs[i].likes)
+            } else {
+                authorsAndTotalLikes.set(blogs[i].author, blogs[i].likes)
+            }
+        }
+        let authorWithMostLikes = blogs[0].author
+        let likeCount = blogs[0].likes
+        for (let [key, value] of authorsAndTotalLikes.entries()) {
+            if (value > likeCount) {
+                likeCount = value
+                authorWithMostLikes = key
+            }
+        }
+        return {
+            author: authorWithMostLikes,
+            likes: likeCount
         }
     }
 }
 
 module.exports = {
+    defaultReturn,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
