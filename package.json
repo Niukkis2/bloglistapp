@@ -8,8 +8,10 @@
     "url": "https://github.com/Niukkis2/bloglistapp.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "start": "node index.js",
+    "test": "jest --verbose",
+    "dev": "nodemon index.js",
+    "lint": "./node_modules/.bin/eslint"
   },
   "author": "niu",
   "license": "ISC",
