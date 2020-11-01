@@ -39,6 +39,27 @@ test('a specific blog is within the returned blogs', async () => {
     const titles = response.body.map(r => r.title)
     expect(titles).toContain('Testblog 2')
 })
+test('identifier property is named id', async () => {
+    const response = await api.get('/api/blogs/')
+    expect(response.body[0].id).toBeDefined()
+})
+test('POST request creates new blog', async () => {
+    const newBlog = {
+        title: 'POST test',
+        author: 'POST test author',
+        url: 'www.POST.com',
+        likes: 2
+    }
+    const postRes = await api
+        .post('/api/blogs')
+        .send(newBlog)
+    expect(postRes.body.title).toBe('POST test')
+    expect(postRes.body.author).toBe('POST test author')
+    expect(postRes.body.url).toBe('www.POST.com')
+    expect(postRes.body.likes).toBe(2)
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+})
 afterAll(() => {
     mongoose.connection.close()
 })
