@@ -53,12 +53,41 @@ test('POST request creates new blog', async () => {
     const postRes = await api
         .post('/api/blogs')
         .send(newBlog)
+    console.log(postRes.body)
     expect(postRes.body.title).toBe('POST test')
     expect(postRes.body.author).toBe('POST test author')
     expect(postRes.body.url).toBe('www.POST.com')
     expect(postRes.body.likes).toBe(2)
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(initialBlogs.length + 1)
+})
+test('missing likes property defaults to 0', async () => {
+    const blogWithNoLikes = {
+        title: 'No likes',
+        author: 'No likes author',
+        url: 'www.nolikes.com'
+    }
+    const postRes = await api
+        .post('/api/blogs')
+        .send(blogWithNoLikes)
+    expect(postRes.body.likes).toBe(0)
+})
+test('title and url missing respond with bad request', async () => {
+    const blogMissingTitleAndUrl = {
+        author: 'missing',
+        likes: 5
+    }
+    const postRes = await api
+        .post('/api/blogs')
+        .send(blogMissingTitleAndUrl)
+    expect(postRes.status).toEqual(400)
+})
+test('delete request removes blog', async () => {
+    const blogs = await api.get('/api/blogs')
+    const id = blogs.body[0].id
+    const delRes = await api
+        .delete(`/api/blogs/${id}`)
+    expect(delRes.status).toEqual(204)
 })
 afterAll(() => {
     mongoose.connection.close()
