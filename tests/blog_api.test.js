@@ -89,6 +89,20 @@ test('delete request removes blog', async () => {
         .delete(`/api/blogs/${id}`)
     expect(delRes.status).toEqual(204)
 })
+test('changing likes of blog', async () => {
+    const blogs = await api.get('/api/blogs')
+    const blog = {
+        title: blogs.body[0].title,
+        author: blogs.body[0].author,
+        url: blogs.body[0].url,
+        likes: blogs.body[0].likes + 1
+    }
+    const id = blogs.body[0].id
+    const patchRes = await api
+        .patch(`/api/blogs/${id}`)
+        .send(blog)
+    expect(patchRes.body.likes).toBe(blogs.body[0].likes + 1)
+})
 afterAll(() => {
     mongoose.connection.close()
 })
